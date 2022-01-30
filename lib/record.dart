@@ -234,11 +234,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primaryColor: Colors.lightGreen[210],
-      ),
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: Text(widget.situation),
         ),
@@ -262,7 +258,6 @@ class _MyAppState extends State<MyApp> {
                   },
                 ),
         ),
-      ),
     );
   }
 }
