@@ -88,22 +88,6 @@ class _SituationsState extends State<Situations> {
   }
 }
 
-Widget situationButton(Situation _situation, BuildContext context) {
-  return ElevatedButton(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(child: Text(_situation.name)),
-          Container(child: Text('0')),
-        ],
-      ),
-      onPressed: () {
-        Recording recording = Get.put(Recording());
-        recording.situation = _situation;
-        Get.toNamed('/mood');
-      });
-}
-
 class NewSituation extends StatefulWidget {
   final update;
   const NewSituation({Key? key, required this.update}) : super(key: key);

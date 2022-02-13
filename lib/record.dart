@@ -239,6 +239,7 @@ class _RecordPageState extends State<RecordPage> {
       body: Center(
         child: showPlayer
             ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 25),
@@ -272,9 +273,8 @@ class _RecordPageState extends State<RecordPage> {
 
   Future saveRecord(String path) async {
     File fileToSave = File(path);
-    Recording recording = Recording();
-    Situation situation = Get.find();
-    recording.situation = situation;
+    Recording recording = Get.find();
+    recording.path = path;
     Database database = Get.find();
     await database.insert('recordings', recording.toMap());
     return;

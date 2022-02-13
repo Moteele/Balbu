@@ -1,5 +1,5 @@
 import 'package:balbu1/routes/app_routes.dart';
-import 'package:flutter/material.dart';
+import 'package:sqflite_common/sqflite_dev.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path/path.dart';
 import 'app_export.dart';
@@ -7,7 +7,8 @@ import 'db_header.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  // only for debug
+  await databaseFactory.setLogLevel(sqfliteLogLevelVerbose);
   var databasesPath = await getDatabasesPath();
   String path = join(databasesPath, 'database.db');
   await deleteDatabase(path);
