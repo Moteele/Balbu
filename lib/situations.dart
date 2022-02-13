@@ -1,13 +1,14 @@
 import 'package:balbu1/record.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
+import 'app_export.dart';
 import 'db_header.dart';
 import 'mood.dart';
 
 class Situations extends StatefulWidget {
-  final Database db;
+  final Database db = Get.find();
 
-  const Situations({Key? key, required this.db}) : super(key: key);
+  Situations({Key? key}) : super(key: key);
   @override
   _SituationsState createState() => _SituationsState();
 }
@@ -24,8 +25,10 @@ class _SituationsState extends State<Situations> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Vyber situaci'),),
-        body: _buildSituations(),
+      appBar: AppBar(
+        title: Text('Vyber situaci'),
+      ),
+      body: _buildSituations(),
     );
   }
 
@@ -49,7 +52,7 @@ class _SituationsState extends State<Situations> {
                     if (i == snapshot.data?.length) {
                       return NewSituation(update: _addSituation);
                     }
-                    return situationButton(snapshot.data![i].name, context);
+                    return situationButton(snapshot.data![i], context);
                   });
             } else if (snapshot.hasError) {
               children = <Widget>[
@@ -85,20 +88,19 @@ class _SituationsState extends State<Situations> {
   }
 }
 
-Widget situationButton(String name, BuildContext context) {
+Widget situationButton(Situation _situation, BuildContext context) {
   return ElevatedButton(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Flexible(child: Text(name)),
+          Flexible(child: Text(_situation.name)),
           Container(child: Text('0')),
         ],
       ),
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Mood(situation: name)),
-        );
+        Recording recording = Get.put(Recording());
+        recording.situation = _situation;
+        Get.toNamed('/mood');
       });
 }
 

@@ -1,8 +1,6 @@
 import 'dart:async';
-
-import 'package:flutter/widgets.dart';
+import 'app_export.dart';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,7 +10,7 @@ void main() async {
 
   // await deleteDatabase(path);
 
-  final database = openDatabase(
+  final database = Get.put(openDatabase(
     path,
     onCreate: (db, version) {
       return db.execute(
@@ -20,7 +18,7 @@ void main() async {
       );
     },
     version: 1,
-  );
+  ));
 
   Future<void> insertRecording(Recording record) async {
     final db = await database;

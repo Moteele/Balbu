@@ -1,45 +1,45 @@
-import 'package:balbu1/record.dart';
-import 'package:flutter/material.dart';
+import 'package:balbu1/db_header.dart';
+import 'app_export.dart';
 
 class Mood extends StatelessWidget {
-  final String situation;
-  const Mood({Key? key, required this.situation}) : super(key: key);
+  final Recording recording = Get.find();
+  Mood({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(situation + ': Jak se citíš?'),
+        title: Text(recording.situation!.name + ': Jak se citíš?'),
       ),
       body: Container(
         alignment: Alignment.center,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
+          children: const [
             MoodButton(
               icon: Icons.sentiment_very_dissatisfied,
               color: Colors.red,
-              situation: situation,
+              weight: 1,
             ),
             MoodButton(
               icon: Icons.sentiment_dissatisfied,
               color: Colors.orange,
-              situation: situation,
+              weight: 2,
             ),
             MoodButton(
               icon: Icons.sentiment_neutral,
               color: Colors.yellow,
-              situation: situation,
+              weight: 3,
             ),
             MoodButton(
               icon: Icons.sentiment_satisfied,
               color: Colors.lightGreen,
-              situation: situation,
+              weight: 4,
             ),
             MoodButton(
               icon: Icons.sentiment_very_satisfied,
               color: Colors.green,
-              situation: situation,
+              weight: 5,
             ),
           ],
         ),
@@ -51,19 +51,21 @@ class Mood extends StatelessWidget {
 class MoodButton extends StatelessWidget {
   final IconData icon;
   final Color color;
-  final String situation;
-  const MoodButton({Key? key, required this.icon, this.color = Colors.black, required this.situation})
+  final int weight;
+  const MoodButton(
+      {Key? key,
+      required this.icon,
+      this.color = Colors.black,
+      required this.weight})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => MyApp(situation: situation)),
-          );
+          final Recording recording = Get.find();
+          recording.moodBefore = weight;
+          Get.toNamed('/recordPage');
         },
         child: Icon(
           icon,

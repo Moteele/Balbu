@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:balbu1/db_header.dart';
 import 'package:just_audio/just_audio.dart' as ap;
 import 'package:record/record.dart';
-import 'example.dart';
+import 'app_export.dart';
+import 'play_widget.dart';
 
 class AudioRecorder extends StatefulWidget {
   final void Function(String path) onStop;
@@ -39,34 +41,30 @@ class _AudioRecorderState extends State<AudioRecorder> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Column(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (_amplitude == null)
+          ...[]
+        else if (_amplitude != null && _amplitude!.current > -20.0) ...[
+          const Icon(Icons.graphic_eq, size: 50),
+        ] else ...[
+          const Icon(Icons.horizontal_rule, size: 50),
+        ],
+        SizedBox(
+          height: 30,
+        ),
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (_amplitude == null)
-              ...[]
-            else if (_amplitude != null && _amplitude!.current > -20.0) ...[
-              const Icon(Icons.graphic_eq, size: 50),
-            ] else ...[
-              const Icon(Icons.horizontal_rule, size: 50),
-            ],
-            SizedBox(
-              height: 30,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                _buildRecordStopControl(),
-                const SizedBox(width: 20),
-                _buildPauseResumeControl(),
-                const SizedBox(width: 20),
-                _buildText(),
-              ],
-            ),
+          children: <Widget>[
+            _buildRecordStopControl(),
+            const SizedBox(width: 20),
+            _buildPauseResumeControl(),
+            const SizedBox(width: 20),
+            _buildText(),
           ],
         ),
-      ),
+      ],
     );
   }
 
@@ -174,7 +172,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
   Future<void> _stop() async {
     _timer?.cancel();
     _ampTimer?.cancel();
-    final path = await _audioRecorder.stop();
+    final path = Get.put(await _audioRecorder.stop());
 
     widget.onStop(path!);
 
@@ -212,19 +210,19 @@ class _AudioRecorderState extends State<AudioRecorder> {
   }
 }
 
-class MyApp extends StatefulWidget {
-  final String situation;
+class RecordPage extends StatefulWidget {
+  final Recording recording = Get.find();
 
-  const MyApp({Key? key, this.situation = 'default'}) : super(key: key);
+  RecordPage({Key? key}) : super(key: key);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  _RecordPageState createState() => _RecordPageState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _RecordPageState extends State<RecordPage> {
   bool showPlayer = false;
   ap.AudioSource? audioSource;
-
+  String tmpPath = '';
 
   @override
   void initState() {
@@ -235,29 +233,50 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.situation),
-        ),
-        body: Center(
-          child: showPlayer
-              ? Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
-                  child: AudioPlayer(
-                    source: audioSource!,
-                    onDelete: () {
-                      setState(() => showPlayer = false);
-                    },
+      appBar: AppBar(
+        title: Text(widget.recording.situation!.name),
+      ),
+      body: Center(
+        child: showPlayer
+            ? Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 25),
+                    child: AudioPlayer(
+                      source: audioSource!,
+                      onDelete: () {
+                        setState(() => showPlayer = false);
+                      },
+                    ),
                   ),
-                )
-              : AudioRecorder(
-                  onStop: (path) {
-                    setState(() {
-                      audioSource = ap.AudioSource.uri(Uri.parse(path));
-                      showPlayer = true;
-                    });
-                  },
-                ),
-        ),
+                  ElevatedButton(
+                      onPressed: () {
+                        saveRecord(tmpPath);
+                        Get.toNamed('/listRecords');
+                      },
+                      child: const Text("Ulož"))
+                ],
+              )
+            : AudioRecorder(
+                onStop: (path) {
+                  setState(() {
+                    tmpPath = path;
+                    audioSource = ap.AudioSource.uri(Uri.parse(path));
+                    showPlayer = true;
+                  });
+                },
+              ),
+      ),
     );
+  }
+
+  Future saveRecord(String path) async {
+    File fileToSave = File(path);
+    Recording recording = Recording();
+    Situation situation = Get.find();
+    recording.situation = situation;
+    Database database = Get.find();
+    await database.insert('recordings', recording.toMap());
+    return;
   }
 }
