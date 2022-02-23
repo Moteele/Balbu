@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:balbu1/db_header.dart';
 import 'package:just_audio/just_audio.dart' as ap;
+import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'app_export.dart';
 import 'play_widget.dart';
@@ -212,6 +212,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
 
 class RecordPage extends StatefulWidget {
   final Recording recording = Get.find();
+  final Database database = Get.find();
 
   RecordPage({Key? key}) : super(key: key);
 
@@ -245,15 +246,17 @@ class _RecordPageState extends State<RecordPage> {
                     padding: EdgeInsets.symmetric(horizontal: 25),
                     child: AudioPlayer(
                       source: audioSource!,
+                      showTrash: true,
                       onDelete: () {
                         setState(() => showPlayer = false);
                       },
                     ),
                   ),
                   ElevatedButton(
-                      onPressed: () {
-                        saveRecord(tmpPath);
-                        Get.toNamed('/listRecords');
+                      onPressed: () async {
+                        await saveRecord(tmpPath);
+                        Get.offAllNamed('/moodAfter',
+                            arguments: widget.recording);
                       },
                       child: const Text("Ulož"))
                 ],
@@ -271,12 +274,27 @@ class _RecordPageState extends State<RecordPage> {
     );
   }
 
-  Future saveRecord(String path) async {
-    File fileToSave = File(path);
-    Recording recording = Get.find();
-    recording.path = path;
-    Database database = Get.find();
-    await database.insert('recordings', recording.toMap());
+  Future saveRecord(String _tmpPath) async {
+    List<Map> _idList =
+        await widget.database.rawQuery('SELECT MAX(id) FROM recordings');
+    int _id = (_idList[0]['MAX(id)'] ?? 0) + 1;
+    final directory = await getApplicationDocumentsDirectory();
+    widget.recording.id = _id;
+    String path = '${directory.path}/recording_${_id.toString()}.m4a';
+    widget.recording.path = (await moveFile(File(_tmpPath), path)).path;
+    await widget.database.insert('recordings', widget.recording.toMap());
     return;
+  }
+
+  Future<File> moveFile(File sourceFile, String newPath) async {
+    try {
+      // prefer using rename as it is probably faster
+      return await sourceFile.rename(newPath);
+    } on FileSystemException catch (e) {
+      // if rename fails, copy the source file and then delete it
+      final newFile = await sourceFile.copy(newPath);
+      await sourceFile.delete();
+      return newFile;
+    }
   }
 }

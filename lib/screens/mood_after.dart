@@ -1,42 +1,41 @@
-import 'package:balbu1/db_header.dart';
-import 'app_export.dart';
+import '../app_export.dart';
 
-class Mood extends StatelessWidget {
+class MoodAfter extends StatelessWidget {
   final Recording recording = Get.find();
-  Mood({Key? key}) : super(key: key);
+  MoodAfter({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(recording.situation!.name + ': Jak se citíš?'),
+        title: const Text(': Jak se citíš po situaci?'),
       ),
       body: Container(
         alignment: Alignment.center,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: const [
-            MoodButton(
+            MoodAfterButton(
               icon: Icons.sentiment_very_dissatisfied,
               color: Colors.red,
               weight: 1,
             ),
-            MoodButton(
+            MoodAfterButton(
               icon: Icons.sentiment_dissatisfied,
               color: Colors.orange,
               weight: 2,
             ),
-            MoodButton(
+            MoodAfterButton(
               icon: Icons.sentiment_neutral,
               color: Colors.yellow,
               weight: 3,
             ),
-            MoodButton(
+            MoodAfterButton(
               icon: Icons.sentiment_satisfied,
               color: Colors.lightGreen,
               weight: 4,
             ),
-            MoodButton(
+            MoodAfterButton(
               icon: Icons.sentiment_very_satisfied,
               color: Colors.green,
               weight: 5,
@@ -48,11 +47,11 @@ class Mood extends StatelessWidget {
   }
 }
 
-class MoodButton extends StatelessWidget {
+class MoodAfterButton extends StatelessWidget {
   final IconData icon;
   final Color color;
   final int weight;
-  const MoodButton(
+  const MoodAfterButton(
       {Key? key,
       required this.icon,
       this.color = Colors.black,
@@ -62,10 +61,11 @@ class MoodButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-        onPressed: () {
-          final Recording recording = Get.find();
-          recording.moodBefore = weight;
-          Get.toNamed('/recordPage');
+        onPressed: () async {
+          final Database database = Get.find();
+          await database.update('recordings', {'moodAfter': '$weight'},
+              where: 'id = ?', whereArgs: ['${Get.arguments.id}']);
+          Get.toNamed('/listRecords');
         },
         child: Icon(
           icon,

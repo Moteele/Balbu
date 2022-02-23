@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:balbu1/db_header.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart' as ap;
 
@@ -14,10 +13,12 @@ class AudioPlayer extends StatefulWidget {
   /// Callback when audio file should be removed
   /// Setting this to null hides the delete button
   final VoidCallback onDelete;
+  final bool showTrash;
 
   const AudioPlayer({
     required this.source,
     required this.onDelete,
+    required this.showTrash,
   });
 
   @override
@@ -74,13 +75,14 @@ class AudioPlayerState extends State<AudioPlayer> {
           children: <Widget>[
             _buildControl(),
             _buildSlider(constraints.maxWidth),
-            IconButton(
-              icon: Icon(Icons.delete,
-                  color: const Color(0xFF73748D), size: _deleteBtnSize),
-              onPressed: () {
-                _audioPlayer.stop().then((value) => widget.onDelete());
-              },
-            ),
+            if (widget.showTrash)
+              IconButton(
+                icon: Icon(Icons.delete,
+                    color: const Color(0xFF73748D), size: _deleteBtnSize),
+                onPressed: () {
+                  _audioPlayer.stop().then((value) => widget.onDelete());
+                },
+              ),
           ],
         );
       },
@@ -159,17 +161,5 @@ class AudioPlayerState extends State<AudioPlayer> {
   Future<void> stop() async {
     await _audioPlayer.stop();
     return _audioPlayer.seek(const Duration(milliseconds: 0));
-  }
-
-  Future<File> moveFile(File sourceFile, String newPath) async {
-    try {
-      // prefer using rename as it is probably faster
-      return await sourceFile.rename(newPath);
-    } on FileSystemException catch (e) {
-      // if rename fails, copy the source file and then delete it
-      final newFile = await sourceFile.copy(newPath);
-      await sourceFile.delete();
-      return newFile;
-    }
   }
 }

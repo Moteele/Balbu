@@ -1,9 +1,4 @@
-import 'package:balbu1/record.dart';
-import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
 import 'app_export.dart';
-import 'db_header.dart';
-import 'mood.dart';
 
 class Situations extends StatefulWidget {
   final Database db = Get.find();
@@ -26,7 +21,7 @@ class _SituationsState extends State<Situations> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Vyber situaci'),
+        title: const Text('Vyber situaci'),
       ),
       body: _buildSituations(),
     );

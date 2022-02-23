@@ -1,12 +1,4 @@
-import 'package:balbu1/situations.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:sqflite/sqflite.dart';
-
 import 'app_export.dart';
-import 'db_header.dart';
-import 'mood.dart';
 
 class Welcome extends StatelessWidget {
   final Database db = Get.find();
@@ -36,31 +28,33 @@ class Welcome extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: SizedBox(
-                    height: 70,
+                    height: 50,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          shape: StadiumBorder(), padding: EdgeInsets.all(10)),
+                          shape: StadiumBorder(),
+                          minimumSize: Size.fromWidth(200)),
                       onPressed: () {
                         Get.toNamed('/situations');
                       },
                       child:
-                          const Text('Začít', style: TextStyle(fontSize: 30)),
+                          const Text('Začít', style: TextStyle(fontSize: 20)),
                     ),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: SizedBox(
-                    height: 70,
+                    height: 50,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         shape: const StadiumBorder(),
+                        minimumSize: Size.fromWidth(200),
                       ),
                       onPressed: () {
-                        Get.toNamed('/situations');
+                        Get.toNamed('/listRecords');
                       },
                       child: const Text('Můj přehled',
-                          style: TextStyle(fontSize: 30)),
+                          style: TextStyle(fontSize: 20)),
                     ),
                   ),
                 ),
