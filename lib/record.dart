@@ -10,7 +10,7 @@ import 'play_widget.dart';
 class AudioRecorder extends StatefulWidget {
   final void Function(String path) onStop;
 
-  const AudioRecorder({required this.onStop});
+  const AudioRecorder({Key? key, required this.onStop}) : super(key: key);
 
   @override
   _AudioRecorderState createState() => _AudioRecorderState();
@@ -165,7 +165,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
         _startTimer();
       }
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
@@ -173,6 +173,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
     _timer?.cancel();
     _ampTimer?.cancel();
     final path = Get.put(await _audioRecorder.stop());
+    Get.put(_recordDuration);
 
     widget.onStop(path!);
 
@@ -280,6 +281,8 @@ class _RecordPageState extends State<RecordPage> {
     int _id = (_idList[0]['MAX(id)'] ?? 0) + 1;
     final directory = await getApplicationDocumentsDirectory();
     widget.recording.id = _id;
+    int _recordDuration = Get.find();
+    widget.recording.duration = Duration(seconds: _recordDuration);
     String path = '${directory.path}/recording_${_id.toString()}.m4a';
     widget.recording.path = (await moveFile(File(_tmpPath), path)).path;
     await widget.database.insert('recordings', widget.recording.toMap());

@@ -1,4 +1,4 @@
-import 'package:balbu1/play_widget.dart';
+import 'package:Balbu/play_widget.dart';
 
 import '../app_export.dart';
 import 'package:just_audio/just_audio.dart' as ap;
@@ -60,7 +60,16 @@ class _RecordInfoState extends State<RecordInfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(Get.arguments.situation.name)),
+        appBar: AppBar(
+          title: Text(Get.arguments.situation.name),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.info),
+              onPressed: () =>
+                  Get.toNamed('/artefactsInfo', arguments: artefacts),
+            )
+          ],
+        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [

@@ -1,9 +1,10 @@
-import 'package:balbu1/mood_before.dart';
-import 'package:balbu1/record.dart';
-import 'package:balbu1/screens/mood_after.dart';
-import 'package:balbu1/screens/record_info.dart';
-import 'package:balbu1/situations.dart';
-import 'package:balbu1/welcome.dart';
+import 'package:Balbu/mood_before.dart';
+import 'package:Balbu/record.dart';
+import 'package:Balbu/screens/artefacts_info.dart';
+import 'package:Balbu/screens/mood_after.dart';
+import 'package:Balbu/screens/record_info.dart';
+import 'package:Balbu/situations.dart';
+import 'package:Balbu/welcome.dart';
 import 'package:get/get.dart';
 import '../screens/list_records.dart';
 
@@ -15,6 +16,7 @@ class AppRoutes {
   static String recordPage = '/recordPage';
   static String listRecords = '/listRecords';
   static String recordInfo = '/recordInfo';
+  static String artefactsInfo = '/artefactsInfo';
 
   static List<GetPage> pages = [
     GetPage(
@@ -27,5 +29,6 @@ class AppRoutes {
     GetPage(name: listRecords, page: () => ListRecords()),
     GetPage(name: recordInfo, page: () => RecordInfo()),
     GetPage(name: moodAfter, page: () => MoodAfter()),
+    GetPage(name: artefactsInfo, page: () => ArtefactsInfo()),
   ];
 }

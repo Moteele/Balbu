@@ -1,4 +1,4 @@
-import 'package:balbu1/routes/app_routes.dart';
+import 'package:Balbu/routes/app_routes.dart';
 import 'package:sqflite_common/sqflite_dev.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path/path.dart';
@@ -9,7 +9,7 @@ void main() async {
   // only for debug
   await databaseFactory.setLogLevel(sqfliteLogLevelVerbose);
   var databasesPath = await getDatabasesPath();
-  String path = join(databasesPath, 'database3.db');
+  String path = join(databasesPath, 'database4.db');
   //await deleteDatabase(path);
   final database = await openDatabase(
     path,

@@ -9,7 +9,16 @@ class Recording {
   int? moodAfter = -1;
   String path = '';
   DateTime time = DateTime(0);
-  List<String>? artefacts = ['0','0','0','0','0','0','0',];
+  List<String>? artefacts = [
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+  ];
+  Duration duration = const Duration(seconds: 0);
 
   Recording();
   Recording.args(
@@ -19,7 +28,8 @@ class Recording {
       this.moodAfter,
       this.artefacts,
       required this.path,
-      required this.time});
+      required this.time,
+      required this.duration});
 
   Map<String, dynamic> toMap() {
     var map = <String, Object?>{
@@ -29,6 +39,7 @@ class Recording {
       'path': path,
       'artefacts': artefacts?.join(','),
       'time': time.toString(),
+      'duration': duration.inSeconds,
     };
     if (id != null) {
       map['id'] = id;
@@ -46,13 +57,15 @@ class Recording {
 
     return List.generate(maps.length, (i) {
       return Recording.args(
-          id: maps[i]['id'],
-          situation: Situation.fromJson(json.decode(maps[i]['situationId'])),
-          moodBefore: maps[i]['moodBefore'],
-          moodAfter: maps[i]['moodAfter'],
-          path: maps[i]['path'],
-          artefacts: maps[i]['artefacts'].split(','),
-          time: DateTime.parse(maps[i]['time']));
+        id: maps[i]['id'],
+        situation: Situation.fromJson(json.decode(maps[i]['situationId'])),
+        moodBefore: maps[i]['moodBefore'],
+        moodAfter: maps[i]['moodAfter'],
+        path: maps[i]['path'],
+        artefacts: maps[i]['artefacts'].split(','),
+        time: DateTime.parse(maps[i]['time']),
+        duration: Duration(seconds: maps[i]['duration']),
+      );
     });
   }
 }
@@ -99,7 +112,7 @@ void createDb(Database db, int version) async {
   Batch batch = db.batch();
   batch.execute("CREATE TABLE situations(id INTEGER PRIMARY KEY, name TEXT);");
   batch.execute(
-      "CREATE TABLE recordings(id INTEGER PRIMARY KEY, moodBefore INTEGER, moodAfter INTEGER, artefacts TEXT, path TEXT, time TEXT, situationId TEXT, FOREIGN KEY(situationId) REFERENCES situations(id));");
+      "CREATE TABLE recordings(id INTEGER PRIMARY KEY, moodBefore INTEGER, moodAfter INTEGER, artefacts TEXT, path TEXT, time TEXT, duration INTEGER, situationId TEXT, FOREIGN KEY(situationId) REFERENCES situations(id));");
   batch.execute("INSERT INTO situations(id, name) VALUES(1, 'Čtení')");
   batch.execute("INSERT INTO situations(id, name) VALUES(2, 'Restaurace')");
   batch.execute("INSERT INTO situations(id, name) VALUES(3, 'Obchod')");

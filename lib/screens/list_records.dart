@@ -1,4 +1,4 @@
-import 'package:balbu1/app_export.dart';
+import 'package:Balbu/app_export.dart';
 
 class ListRecords extends StatelessWidget {
   ListRecords({Key? key}) : super(key: key);
@@ -8,7 +8,7 @@ class ListRecords extends StatelessWidget {
   Widget build(BuildContext context) {
     final Future<List<Recording>> _recs = Recording.getRecordings(database);
     return Scaffold(
-      appBar: AppBar(title: Text('Mé nahrávky')),
+      appBar: AppBar(title: const Text('Mé nahrávky')),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

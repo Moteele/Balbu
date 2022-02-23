@@ -1,4 +1,4 @@
-package com.example.balbu1
+package com.example.Balbu
 
 import io.flutter.embedding.android.FlutterActivity
 

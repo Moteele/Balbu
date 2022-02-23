@@ -1,7 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart' as ap;
 
 import 'app_export.dart';
@@ -77,8 +74,8 @@ class AudioPlayerState extends State<AudioPlayer> {
             _buildSlider(constraints.maxWidth),
             if (widget.showTrash)
               IconButton(
-                icon: Icon(Icons.delete,
-                    color: const Color(0xFF73748D), size: _deleteBtnSize),
+                icon: const Icon(Icons.delete,
+                    color: Color(0xFF73748D), size: _deleteBtnSize),
                 onPressed: () {
                   _audioPlayer.stop().then((value) => widget.onDelete());
                 },
@@ -94,7 +91,7 @@ class AudioPlayerState extends State<AudioPlayer> {
     Color color;
 
     if (_audioPlayer.playerState.playing) {
-      icon = Icon(Icons.pause, color: Colors.red, size: 30);
+      icon = const Icon(Icons.pause, color: Colors.red, size: 30);
       color = Colors.red.withOpacity(0.1);
     } else {
       final theme = Theme.of(context);
